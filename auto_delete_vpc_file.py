@@ -11,59 +11,44 @@ import os
 
 
 def vpc_deletion(input_dict):
-
-    region = input_dict["default_region"]
+    region = input_dict["region"]
     vpc_id = input_dict["vpc_id"]
-    internetgateway_id = input_dict["internetgateway_id"]
-    pub_routetable_id = input_dict["pub_routetable_id"]
-    pub_subnet_id = input_dict["public_subnet_obj_id"]
-    priv_routetable_id = input_dict["priv_routetable_id"]
-    priv_subnet_id = input_dict["private_subnet_obj_id"]
-
+    internetgateway_id = input_dict["internet_gateway_id"]
+    route_info_list = input_dict["route_info"]
     default_region = boto3.setup_default_session(
         region_name=region,
     )
     client = boto3.client("ec2")
-    # delete private subnet
-    response = client.delete_subnet(
-        SubnetId=priv_subnet_id,
-    )
-    print(f"{response=}")
-
-    # delete private route table
-    response = client.delete_route_table(
-        RouteTableId=priv_routetable_id,
-    )
-    print(f"{response=}")
 
     # detach internet gateway
     response = client.detach_internet_gateway(
         InternetGatewayId=internetgateway_id,
         VpcId=vpc_id,
     )
+    print(f"{response['ResponseMetadata']['HTTPStatusCode']}")
     # delete internet gateway
     response = client.delete_internet_gateway(
         InternetGatewayId=internetgateway_id,
     )
-    print(f"{response=}")
+    print(f"{response['ResponseMetadata']['HTTPStatusCode']}")
 
-    # delete public subnet
-    response = client.delete_subnet(
-        SubnetId=pub_subnet_id,
-    )
-    print(f"{response=}")
+    # delete subnets and route tables
+    for route_info in route_info_list:
+        response = client.delete_subnet(
+            SubnetId=route_info[1],
+        )
+        print(f"{response['ResponseMetadata']['HTTPStatusCode']}")
 
-    # delete public route table
-    response = client.delete_route_table(
-        RouteTableId=pub_routetable_id,
-    )
-    print(f"{response=}")
+        response = client.delete_route_table(
+            RouteTableId=route_info[0],
+        )
+        print(f"{response['ResponseMetadata']['HTTPStatusCode']}")
 
     # delete vpc
     response = client.delete_vpc(
         VpcId=vpc_id,
     )
-    print(f"{response=}")
+    print(f"{response['ResponseMetadata']['HTTPStatusCode']}")
 
 
 def parse_args():
