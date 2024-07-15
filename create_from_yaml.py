@@ -99,6 +99,7 @@ def vpc_creation(
                 subnet_obj = ec2Resource.create_subnet(
                     CidrBlock=route_info["subnet_cidr"],
                     VpcId=vpc_id,
+                    AvailabilityZone=route_info["availability_zone_id"],
                     TagSpecifications=[
                         {
                             "ResourceType": "subnet",
@@ -112,7 +113,11 @@ def vpc_creation(
                     ],
                 )
                 # Associate with route table
-                subnet_associate = ec2Resource.RouteTableAssociation(route_table_id)
+                # subnet_associate = ec2Resource.RouteTableAssociation(route_table_id)
+                subnet_associate = ec2Client.associate_route_table(
+                 RouteTableId=route_table_id,
+                 SubnetId=subnet_obj.id,
+                )
                 # print(f"{subnet_id=}")
                 print(f"{subnet_obj.id=}")
                 print(f"{route_table_id=}")

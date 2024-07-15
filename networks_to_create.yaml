@@ -10,10 +10,12 @@ networks:
             subnet_cidr: "10.10.0.0/24"
             subnet_name: Public_Subnet_VPC_A
             default_route: true
+            availability_zone_id: us-east-2a
           - route_table_name: VPC_A_Private_RT
             subnet_cidr: "10.10.1.0/24"
             subnet_name: Private_Subnet_VPC_A
             default_route: false
+            availability_zone_id: us-east-2b
       - name: VPC_B
         cidr_range: "10.20.0.0/16"
         internet_gateway_name: IG_VPC_B
@@ -22,7 +24,9 @@ networks:
             subnet_cidr: "10.20.0.0/24"
             subnet_name: Public_Subnet_VPC_B
             default_route: true
+            availability_zone_id: us-east-2a
           - route_table_name: VPC_B_Private_RT
             subnet_cidr: "10.20.1.0/24"
             subnet_name: Private_Subnet_VPC_B
             default_route: false
+            availability_zone_id: us-east-2b
