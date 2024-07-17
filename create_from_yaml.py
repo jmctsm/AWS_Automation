@@ -46,28 +46,31 @@ def vpc_creation(
                 },
             )
             print(f"{vpc_id=}")
-            # create an internet gateway and attach it to VPC
-            internetgateway = ec2Client.create_internet_gateway(
-                TagSpecifications=[
-                    {
-                        "ResourceType": "internet-gateway",
-                        "Tags": [
-                            {
-                                "Key": "Name",
-                                "Value": vpc_to_create["internet_gateway_name"],
-                            },
-                        ],
-                    },
-                ],
-            )
-            internet_gateway_id = internetgateway["InternetGateway"][
-                "InternetGatewayId"
-            ]
-            # internetgateway = ec2.create_internet_gateway()
-            attach_gateway = ec2Client.attach_internet_gateway(
-                InternetGatewayId=internet_gateway_id,
-                VpcId=vpc_id,
-            )
+            if vpc_to_create["internet_gateway_name"]:
+                # create an internet gateway and attach it to VPC
+                internetgateway = ec2Client.create_internet_gateway(
+                    TagSpecifications=[
+                        {
+                            "ResourceType": "internet-gateway",
+                            "Tags": [
+                                {
+                                    "Key": "Name",
+                                    "Value": vpc_to_create["internet_gateway_name"],
+                                },
+                            ],
+                        },
+                    ],
+                )
+                internet_gateway_id = internetgateway["InternetGateway"][
+                    "InternetGatewayId"
+                ]
+                # internetgateway = ec2.create_internet_gateway()
+                attach_gateway = ec2Client.attach_internet_gateway(
+                    InternetGatewayId=internet_gateway_id,
+                    VpcId=vpc_id,
+                )
+            else:
+                internet_gateway_id = False
             print(f"{internet_gateway_id=}")
 
             # create route tables

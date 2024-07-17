@@ -27,10 +27,11 @@ def vpc_deletion(input_dict):
     )
     print(f"{response['ResponseMetadata']['HTTPStatusCode']}")
     # delete internet gateway
-    response = client.delete_internet_gateway(
-        InternetGatewayId=internetgateway_id,
-    )
-    print(f"{response['ResponseMetadata']['HTTPStatusCode']}")
+    if internetgateway_id is not False:
+        response = client.delete_internet_gateway(
+            InternetGatewayId=internetgateway_id,
+        )
+        print(f"{response['ResponseMetadata']['HTTPStatusCode']}")
 
     # delete subnets and route tables
     for route_info in route_info_list:
